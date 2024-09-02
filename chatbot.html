@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classroom Chatbot Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Link to the external CSS file -->
+    <style>
+      #content {
+        display: none;
+      }
+      #loading {
+        text-align: center;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">
+      <p>Loading...</p>
+    </div>
+    <div id="content" class="container">
+      <h1>Welcome to the Classroom Chatbot Assistant</h1>
+      <p>Get help with your classroom queries using our intelligent chatbot.</p>
+      <!-- Embed the Streamlit app using an iframe -->
+      <iframe
+        src="http://localhost:8502"
+        title="Classroom Chatbot Assistant"
+        width="100%"
+        height="600px"
+        frameborder="0"
+      ></iframe>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Check if the session status is already checked and stored
+        if (!sessionStorage.getItem("sessionChecked")) {
+          fetch("/api/checkSession")
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.authenticated) {
+                window.location.href = "/login.html";
+              } else {
+                // Store flag to indicate session is checked
+                sessionStorage.setItem("sessionChecked", "true");
+                // Show the content and hide the loading message
+                document.getElementById("content").style.display = "block";
+                document.getElementById("loading").style.display = "none";
+              }
+            })
+            .catch(() => {
+              // Handle error and possibly redirect or show an error message
+              window.location.href = "/login.html";
+            });
+        } else {
+          // If session is checked and valid, show content
+          document.getElementById("content").style.display = "block";
+          document.getElementById("loading").style.display = "none";
+        }
+      });
+    </script>
+  </body>
+</html>

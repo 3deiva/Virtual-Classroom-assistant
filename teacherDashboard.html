@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="t.css" />
+  </head>
+  <body>
+    <!-- Content Area -->
+    <div class="content">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="user-info">
+          <span id="welcomeMessage">Welcome, Teacher</span>
+          <img
+            src="images/menu-burger.png"
+            alt="Icon"
+            class="top-bar-icon"
+            id="menuBurger"
+          />
+          <!-- Dropdown Menu -->
+          <div id="dropdownMenu" class="dropdown-menu">
+            <ul>
+              <li onclick="logout()">Logout</li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Overview Section -->
+      <main>
+        <section class="overview">
+          <h1>Dashboard Overview</h1>
+          <p>
+            Welcome to your dashboard, where you can manage various aspects of
+            your teaching responsibilities. Here you can manage your profile,
+            monitor attendance via face recognition, participate in group
+            discussions, give assignments, and check assignment statuses.
+          </p>
+          <div class="card-container">
+            <!-- Manage Profile Card -->
+            <div class="card" onclick="navigateTo('profile')">
+              <div class="card-content">
+                <div class="card-text">
+                  <h2>Manage Profile</h2>
+                  <p>Update your profile information and preferences.</p>
+                </div>
+                <div class="card-image">
+                  <img src="images/b.webp" alt="Manage Profile" />
+                </div>
+              </div>
+            </div>
+
+            <!-- View Classrooms Card -->
+            <div class="card" onclick="navigateTo('classrooms')">
+              <div class="card-content">
+                <div class="card-text">
+                  <h2>View Classrooms</h2>
+                  <p>Check and manage attendance for your classrooms.</p>
+                </div>
+                <div class="card-image">
+                  <img src="images/e.webp" alt="View Classrooms" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Manage Groups Card -->
+            <div class="card reverse" onclick="navigateTo('groups')">
+              <div class="card-content">
+                <div class="card-text">
+                  <h2>Manage Groups</h2>
+                  <p>Organize and manage student groups effectively.</p>
+                </div>
+                <div class="card-image">
+                  <img src="images/f.jpg" alt="Manage Groups" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignments Overview Card -->
+            <div class="card" onclick="navigateTo('assignments')">
+              <div class="card-content">
+                <div class="card-text">
+                  <h2>Assignments Overview</h2>
+                  <p>Track and manage student assignments.</p>
+                </div>
+                <div class="card-image">
+                  <img src="images/g.jpg" alt="Assignments Overview" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      function navigateTo(page) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const phoneNo = urlParams.get("phoneNo");
+
+        let targetUrl;
+        switch (page) {
+          case "profile":
+            targetUrl = `/profile.html?phoneNo=${phoneNo}`;
+            break;
+          case "classrooms":
+            targetUrl = `/classrooms.html`;
+            break;
+          case "groups":
+            targetUrl = `/groups.html`;
+            break;
+          case "assignments":
+            targetUrl = `/assignment.html`;
+            break;
+        }
+
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        }
+      }
+
+      // Check session status on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        // Check if the session status is already checked and stored
+        if (!sessionStorage.getItem("sessionChecked")) {
+          fetch("/api/checkSession")
+            .then((response) => response.json())
+            .then((data) => {
+              if (!data.authenticated) {
+                window.location.href = "/login.html";
+              } else {
+                // Store flag to indicate session is checked
+                sessionStorage.setItem("sessionChecked", "true");
+              }
+            });
+        }
+      });
+
+      // Dropdown toggle
+      const menuBurger = document.getElementById("menuBurger");
+      const dropdownMenu = document.getElementById("dropdownMenu");
+
+      menuBurger.addEventListener("click", (event) => {
+        event.stopPropagation();
+        dropdownMenu.classList.toggle("show");
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener("click", (event) => {
+        if (!dropdownMenu.contains(event.target)) {
+          dropdownMenu.classList.remove("show");
+        }
+      });
+      // Logout function
+      function logout() {
+        // Implement logout logic
+        console.log("Logged out");
+        window.location.href = "/login.html";
+      }
+
+      // Sign Out function
+    </script>
+  </body>
+</html>
